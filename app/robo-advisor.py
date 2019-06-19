@@ -1,5 +1,7 @@
 # app/robo_advisor.py
 
+stock_symbol = input("Please enter stock symbol")
+
 print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
 print("-------------------------")
