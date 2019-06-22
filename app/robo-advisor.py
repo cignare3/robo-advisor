@@ -1,6 +1,34 @@
 # app/robo_advisor.py
+import csv
+import datetime
+import json
+import os
+import requests
 
-stock_symbol = input("Please enter stock symbol")
+#from dotenv import load_dotenv
+
+#load_dotenv()
+
+#request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={stock_symbol}&apikey={API_KEY}"
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=P40N2DKCG8YHQQB4"
+response = requests.get(request_url)
+print(type(response))
+print(response.status_code)
+print(response.text)
+
+parsed_response = json.loads(response.text)
+breakpoint()
+
+quit()
+
+stock_symbol = input("Please enter stock symbol: ")
+#if stock_symbol.isalpha():  
+   
+
+
+    
+#else:
+  #  Print("Oh, expecting a properly-formed stock symbol like 'MSFT'. Please try again.")
 
 print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
