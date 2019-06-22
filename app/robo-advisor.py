@@ -8,12 +8,12 @@ import requests
 def to_usd(my_price):
     return "${0:,.2f}".format(my_price)
 
-#from dotenv import load_dotenv
+from dotenv import load_dotenv
+load_dotenv()
 
-#load_dotenv()
-
-#request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={stock_symbol}&apikey={API_KEY}"
-request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol=MSFT&apikey=P40N2DKCG8YHQQB4"
+API_KEY = os.environ.get("ALPHADVANTAGE_API_KEY")
+stock_symbol = "MSFT"
+request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={stock_symbol}&apikey={API_KEY}"
 response = requests.get(request_url)
 #print(type(response))
 #print(response.status_code)
