@@ -23,7 +23,9 @@ parsed_response = json.loads(response.text)
 
 
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
-close_price = parsed_response["Time Series (Daily)"][last_refreshed]["4. close"]
+dates = list(parsed_response["Time Series (Daily)"]) #assume latest day is first
+lastest_date = dates[0]
+close_price = parsed_response["Time Series (Daily)"][lastest_date]["4. close"]
 
 #breakpoint()
 
