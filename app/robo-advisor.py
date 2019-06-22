@@ -11,17 +11,20 @@ def to_usd(my_price):
 from dotenv import load_dotenv
 load_dotenv()
 
+while True:
+    stock_symbol = input("Please enter stock symbol: ")
+    if len(stock_symbol) > 5:
+     print("Stock symbol input too long, expecting a ticker no more than 5 characters")
+    elif stock_symbol.isalpha():
+        break
+    else:    
+        print("Input should not contains numbers.  Expecting a properly formatted symbol like 'MSFT'.  Please try again.")
+
 API_KEY = os.environ.get("ALPHADVANTAGE_API_KEY")
-stock_symbol = "MSFT"
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={stock_symbol}&apikey={API_KEY}"
 response = requests.get(request_url)
-#print(type(response))
-#print(response.status_code)
-#print(response.text)
 
 parsed_response = json.loads(response.text)
-#print(parsed_response)
-
 
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 tsd = parsed_response["Time Series (Daily)"]
@@ -42,10 +45,9 @@ recent_high = max(high_prices)
 recent_low = min(low_prices)
 
 
-#breakpoint()
 
-#stock_symbol = input("Please enter stock symbol: ")
-#if stock_symbol.isalpha():  
+
+
    
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
