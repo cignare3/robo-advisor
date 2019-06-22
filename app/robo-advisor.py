@@ -5,6 +5,9 @@ import json
 import os
 import requests
 
+def to_usd(my_price):
+    return "${0:,.2f}".format(my_price)
+
 #from dotenv import load_dotenv
 
 #load_dotenv()
@@ -20,6 +23,7 @@ parsed_response = json.loads(response.text)
 
 
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
+close_price = parsed_response["Time Series (Daily)"][last_refreshed]["4. close"]
 
 #breakpoint()
 
@@ -36,10 +40,10 @@ print("-------------------------")
 print("SELECTED SYMBOL: XYZ")
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print(f"REQUEST AT: {last_refreshed}")
+print(f"REQUEST AT: XXXX")
 print("-------------------------")
-print("LATEST DAY: 2018-02-20")
-print("LATEST CLOSE: $100,000.00")
+print(f"LATEST DAY: {last_refreshed}")
+print(f"LATEST CLOSE: {to_usd(float(close_price))}")
 print("RECENT HIGH: $101,000.00")
 print("RECENT LOW: $99,000.00")
 print("-------------------------")
