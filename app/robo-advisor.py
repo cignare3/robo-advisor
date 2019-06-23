@@ -23,16 +23,22 @@ while True:
 API_KEY = os.environ.get("ALPHADVANTAGE_API_KEY")
 request_url = f"https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={stock_symbol}&apikey={API_KEY}"
 response = requests.get(request_url)
+response_message = response.text
+
+if "Error" in response_message:
+        print("Invalid Stock Symbol please try again")
+        quit()
+
 
 parsed_response = json.loads(response.text)
 
 last_refreshed = parsed_response["Meta Data"]["3. Last Refreshed"]
 tsd = parsed_response["Time Series (Daily)"]
-dates = list(tsd.keys()) #assume latest day is first, may want to sort
+dates = list(tsd.keys())
+sorted(dates)   #assume latest day is first, may want to sort
 latest_date = dates[0]
 close_price = tsd[latest_date]["4. close"]
 
-#maximum of all high prices
 high_prices = []
 low_prices = []
 for date in dates:
@@ -43,11 +49,6 @@ for date in dates:
 
 recent_high = max(high_prices)
 recent_low = min(low_prices)
-
-
-
-
-
    
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
@@ -70,15 +71,15 @@ with open(csv_file_path, "w") as csv_file:
             "volume": daily_prices["5. volume"]
         })
 
-    
-#else:
-  #  Print("Oh, expecting a properly-formed stock symbol like 'MSFT'. Please try again.")
+
+now = datetime.datetime.now()
+
 
 print("-------------------------")
-print("SELECTED SYMBOL: XYZ")
+print(f"SELECTED SYMBOL: {stock_symbol}")
 print("-------------------------")
 print("REQUESTING STOCK MARKET DATA...")
-print(f"REQUEST AT: XXXX")
+print("REQUEST AT: " + now.strftime("%Y-%m-%d %I:%M:%S %p"))
 print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
 print(f"LATEST CLOSE: {to_usd(float(close_price))}")
