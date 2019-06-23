@@ -4,6 +4,7 @@ import datetime
 import json
 import os
 import requests
+import statistics
 
 def to_usd(my_price):
     return "${0:,.2f}".format(my_price)
@@ -37,18 +38,25 @@ tsd = parsed_response["Time Series (Daily)"]
 dates = list(tsd.keys())
 sorted(dates)   #assume latest day is first, may want to sort
 latest_date = dates[0]
-close_price = tsd[latest_date]["4. close"]
+latest_close_price = tsd[latest_date]["4. close"]
 
 high_prices = []
 low_prices = []
+close_prices = []
 for date in dates:
     high_price = tsd[date]["2. high"]
     high_prices.append(float((high_price)))
     low_price = tsd[date]["3. low"]
     low_prices.append(float((low_price)))
+    close_price = tsd[date]["4. close"]
+    close_prices.append(float((close_price)))
 
 recent_high = max(high_prices)
 recent_low = min(low_prices)
+Thirty_day_close = close_prices[0:30]
+Ten_day_close = close_prices[0:10]
+avg_thirty_day = statistics.mean(Thirty_day_close)
+avg_ten_day = statistics.mean(Ten_day_close)
    
 csv_file_path = os.path.join(os.path.dirname(__file__), "..", "data", "prices.csv")
 
@@ -73,7 +81,25 @@ with open(csv_file_path, "w") as csv_file:
 
 
 now = datetime.datetime.now()
+recent_close = close_prices[0]
 
+
+if recent_close < avg_thirty_day and recent_close < avg_ten_day:
+    Reccomendation = "Sell"
+    Conviction = "High"
+    Recommendation_Reason = "Current Close price is below 10 and 30 day moving average"
+if recent_close > avg_thirty_day and recent_close < avg_ten_day:
+    Reccomendation = "Sell"
+    Conviction = "Medium"
+    Recommendation_Reason = "Current Close price is below 10 and above 30 day moving average"
+if recent_close < avg_thirty_day and recent_close > avg_ten_day:
+    Reccomendation = "Buy"
+    Conviction = "Medium"
+    Recommendation_Reason = "Current Close price is above 10 and below 30 day moving average"
+if recent_close > avg_thirty_day and recent_close > avg_ten_day:
+    Reccomendation = "Buy"
+    Conviction = "High"
+    Recommendation_Reason = "Current Close price is above 10 and 30 day moving average"
 
 print("-------------------------")
 print(f"SELECTED SYMBOL: {stock_symbol}")
@@ -82,16 +108,15 @@ print("REQUESTING STOCK MARKET DATA...")
 print("REQUEST AT: " + now.strftime("%Y-%m-%d %I:%M:%S %p"))
 print("-------------------------")
 print(f"LATEST DAY: {last_refreshed}")
-print(f"LATEST CLOSE: {to_usd(float(close_price))}")
+print(f"LATEST CLOSE: {to_usd(float(latest_close_price))}")
 print(f"RECENT HIGH: {to_usd(float(recent_high))}")
 print(f"RECENT LOW: {to_usd(float(recent_low))}")
 print("-------------------------")
-print("RECOMMENDATION: BUY!")
-print("RECOMMENDATION REASON: TODO")
+print(f"RECOMMENDATION: {Reccomendation}")
+print(f"CONVICTION: {Conviction}")
+print(f"RECOMMENDATION REASON: {Recommendation_Reason}")
 print("-------------------------")
 print(f"WRITING DATA TO CSV... {csv_file_path}")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
-
-
