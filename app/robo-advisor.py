@@ -5,6 +5,8 @@ import json
 import os
 import requests
 import statistics
+import plotly
+import plotly.graph_objs as go
 
 def to_usd(my_price):
     return "${0:,.2f}".format(my_price)
@@ -84,6 +86,8 @@ now = datetime.datetime.now()
 recent_close = close_prices[0]
 
 
+
+
 if recent_close < avg_thirty_day and recent_close < avg_ten_day:
     Reccomendation = "Sell"
     Conviction = "High"
@@ -120,3 +124,9 @@ print(f"WRITING DATA TO CSV... {csv_file_path}")
 print("-------------------------")
 print("HAPPY INVESTING!")
 print("-------------------------")
+
+
+plotly.offline.plot({
+    "data": [go.Scatter(x=dates, y=close_prices)],
+    "layout": go.Layout(title=f"{stock_symbol} Price Chart")
+}, auto_open=True)
